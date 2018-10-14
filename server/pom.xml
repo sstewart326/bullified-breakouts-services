@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>server</artifactId>
+    <packaging>pom</packaging>
 
+    <modules>
+        <module>bullified-breakouts-server</module>
+    </modules>
 
 </project>
