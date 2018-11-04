@@ -1,5 +1,6 @@
 package com.bullified.breakouts.rest;
 
+import com.bullified.breakouts.domain.UploadFileResponse;
 import com.bullified.breakouts.service.StorageService;
 import com.bullified.breakouts.service.exception.FileCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,17 @@ public class BullifiedBreakoutsController {
 
     @PostMapping("/upload-file")
     @ResponseBody
-    public String uploadFile(@RequestParam("fileName")MultipartFile file) {
+    public UploadFileResponse uploadFile(@RequestParam("fileName")MultipartFile file) {
+        UploadFileResponse response = new UploadFileResponse();
         try {
             storageService.store(file);
         } catch (FileCreationException e) {
-            return "\"status\":\"failure\"";
+            response.setStatus("Failure");
+            response.setMessage(e.getMessage());
+            return response;
         }
-        return "\"status\":\"success\"";
+        response.setStatus("Success");
+        response.setMessage("File Uploaded Successfully");
+        return response;
     }
 }

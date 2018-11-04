@@ -7,9 +7,9 @@
 	<artifactId>bullified-breakouts-services</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>service</module>
-		<module>server</module>
 		<module>domain</module>
+		<module>server</module>
+		<module>service</module>
 		<module>utility</module>
     </modules>
     <packaging>pom</packaging>
@@ -36,6 +36,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.4</version>
+		</dependency>
+
 
 		<!-- TEST SCOPE -->
 		<dependency>
