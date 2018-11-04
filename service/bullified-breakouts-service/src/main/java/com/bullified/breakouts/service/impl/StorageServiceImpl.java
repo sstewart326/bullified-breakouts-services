@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 @Service
 public class StorageServiceImpl implements StorageService {
@@ -22,7 +23,7 @@ public class StorageServiceImpl implements StorageService {
     @Override
     public void store(MultipartFile file) throws FileCreationException {
         try {
-            file.transferTo(new File(storageLocation));
+            file.transferTo(new File(storageLocation + file.getOriginalFilename()));
         } catch (IOException e) {
             LOGGER.error(e.getMessage());
             throw new FileCreationException("Error creating file to path " + storageLocation, e);
