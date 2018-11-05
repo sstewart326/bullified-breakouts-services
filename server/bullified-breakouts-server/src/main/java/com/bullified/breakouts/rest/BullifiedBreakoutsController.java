@@ -1,6 +1,7 @@
 package com.bullified.breakouts.rest;
 
 import com.bullified.breakouts.domain.BullifiedBreakoutsResponse;
+import com.bullified.breakouts.domain.GetImageLocationsResponse;
 import com.bullified.breakouts.service.StorageService;
 import com.bullified.breakouts.service.exception.FileCreationException;
 import com.bullified.breakouts.service.exception.FileRetrievalException;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 public class BullifiedBreakoutsController {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(BullifiedBreakoutsController.class);
+    private static final String SUCCESS = "SUCCESS";
+    private static final String FAILURE = "FAILURE";
 
     @Autowired
     private StorageService storageService;
@@ -36,11 +39,11 @@ public class BullifiedBreakoutsController {
             storageService.store(file);
         } catch (FileCreationException e) {
             LOGGER.error("Error when trying to store file with name " + file.getOriginalFilename(), e);
-            response.setStatus("Failure");
+            response.setStatus(FAILURE);
             response.setMessage(e.getMessage());
             return response;
         }
-        response.setStatus("Success");
+        response.setStatus(SUCCESS);
         response.setMessage("File Uploaded Successfully");
         return response;
     }
@@ -54,6 +57,23 @@ public class BullifiedBreakoutsController {
         } catch (FileRetrievalException e) {
             LOGGER.error("Error when attempting to load files", e);
             return null;
+        }
+    }
+
+    @PostMapping("/get-image-locations")
+    @ResponseBody
+    public GetImageLocationsResponse getImageLocations() {
+        try {
+            GetImageLocationsResponse response = storageService.getImageLocations();
+            response.setStatus(SUCCESS);
+            response.setMessage("Successfully retrieved image meta data");
+            return response;
+        } catch (FileRetrievalException e) {
+            LOGGER.error("Error when attempting to load files", e);
+            GetImageLocationsResponse response = new GetImageLocationsResponse();
+            response.setMessage(e.getMessage());
+            response.setStatus(FAILURE);
+            return response;
         }
     }
 

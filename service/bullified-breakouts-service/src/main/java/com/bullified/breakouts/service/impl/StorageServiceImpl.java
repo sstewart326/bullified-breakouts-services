@@ -1,5 +1,6 @@
 package com.bullified.breakouts.service.impl;
 
+import com.bullified.breakouts.domain.GetImageLocationsResponse;
 import com.bullified.breakouts.service.StorageService;
 import com.bullified.breakouts.service.exception.FileCreationException;
 import com.bullified.breakouts.service.exception.FileRetrievalException;
@@ -62,6 +63,11 @@ public class StorageServiceImpl implements StorageService {
             LOGGER.error(e.getMessage());
             throw new FileRetrievalException("Error zipping files", e);
         }
+    }
+
+    @Override
+    public GetImageLocationsResponse getImageLocations() throws FileRetrievalException {
+        return null;
     }
 
     private byte[] zipFIles(Resource[] resources) throws IOException {
