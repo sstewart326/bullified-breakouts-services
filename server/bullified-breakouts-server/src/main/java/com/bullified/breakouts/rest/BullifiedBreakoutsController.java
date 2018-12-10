@@ -2,17 +2,20 @@ package com.bullified.breakouts.rest;
 
 import com.bullified.breakouts.domain.BullifiedBreakoutsResponse;
 import com.bullified.breakouts.domain.GetImageLocationsResponse;
+import com.bullified.breakouts.domain.ImageMetaData;
 import com.bullified.breakouts.service.StorageService;
 import com.bullified.breakouts.service.exception.FileCreationException;
 import com.bullified.breakouts.service.exception.FileRetrievalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/rest/1.0")
@@ -48,32 +51,44 @@ public class BullifiedBreakoutsController {
         return response;
     }
 
-    @GetMapping(value = "/download-images", produces = "application/zip")
+    @GetMapping(value = "/zip-images", produces = "application/zip")
     @ResponseBody
-    public byte[] downloadImages(HttpServletResponse response) throws FileRetrievalException {
+    public byte[] downloadImagesZip(HttpServletResponse response) throws FileRetrievalException {
         response.addHeader("Content-Disposition", "attachment; filename=\"images.zip\"");
         try {
-            return storageService.loadFiles();
+            return storageService.zipFiles();
         } catch (FileRetrievalException e) {
             LOGGER.error("Error when attempting to load files", e);
-            return null;
+            throw e;
         }
     }
 
-    @PostMapping("/get-image-locations")
+    @GetMapping("/get-image-locations")
     @ResponseBody
     public GetImageLocationsResponse getImageLocations() {
+        GetImageLocationsResponse response = new GetImageLocationsResponse();
         try {
-            GetImageLocationsResponse response = storageService.getImageLocations();
+            Set<ImageMetaData> imagesMetaData = storageService.getImageLocations();
             response.setStatus(SUCCESS);
             response.setMessage("Successfully retrieved image meta data");
+            response.setImageSet(imagesMetaData);
             return response;
         } catch (FileRetrievalException e) {
             LOGGER.error("Error when attempting to load files", e);
-            GetImageLocationsResponse response = new GetImageLocationsResponse();
             response.setMessage(e.getMessage());
             response.setStatus(FAILURE);
             return response;
+        }
+    }
+
+    @GetMapping(value = "/download-file", produces = MediaType.IMAGE_PNG_VALUE)
+    @ResponseBody
+    public byte[] downloadFile(@RequestParam("fileName") String fileName) throws FileRetrievalException {
+        try {
+            return storageService.loadFile(fileName);
+        } catch (FileRetrievalException e) {
+            LOGGER.error("Error when attempting to load file name " + fileName, e);
+            throw e;
         }
     }
 
