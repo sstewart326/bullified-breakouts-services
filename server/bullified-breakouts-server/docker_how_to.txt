@@ -1,5 +1,7 @@
-docker-machine ip
 
+
+#build and deploy
+#=============================================================================================================
 Shared Container
 	docker run -ti --name=shared -v ImageVolume:/images ubuntu
 
@@ -10,8 +12,34 @@ Spring Boot Container
  Angular Container
 	docker build -t bullified-breakouts-webapp .
 	docker run -p 4200:4200 --name webapp --volumes-from shared -d bullified-breakouts-webapp
+
+#===============================================================================================================
  
- 
- Use 	docker ps 	to get the name of the existing container
-Use the command 	docker exec -it <container name> /bin/bash 		to get a bash shell in the container
-Generically, use 	docker exec -it <container name> <command> 		to execute whatever command you specify in the container.
+
+
+Commands:
+#==============================
+
+#get docker ip
+docker-machine ip
+
+
+#list all containers
+docker container ls -a
+
+#list all images
+docker image ls -a
+
+#remove container by name
+docker container rm ${name}
+
+#get running containers
+docker ps
+
+#shell into container
+docker exec -it <container name> /bin/bash
+
+#execute specific command in container
+docker exec -it <container name> <command>
+
+#================================
